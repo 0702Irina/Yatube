@@ -12,6 +12,8 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('about/', include('about.urls', namespace='about')),
 ]
+handler404 = 'core.views.page_not_found'
+handler403 = 'core.views.permission_denied'
 
 if DEBUG:
     urlpatterns += static(
