@@ -178,7 +178,7 @@ class TaskPagesTests(TestCase):
     def test_cache(self):
         cache.clear()
         self.authorized_client.get(reverse('posts:index'))
-        post = Post.objects.create(text="тестируем кэш", author=self.user)
+        post = Post.objects.create(text="Очищение кэша", author=self.user)
         response2 = self.authorized_client.get(reverse('posts:index'))
         self.assertNotIn(post.text, response2.content.decode())
         cache.clear()
