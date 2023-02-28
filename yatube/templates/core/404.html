@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}404!{% endblock %}
+{% block content %}
+  <h1>Ой!</h1>
+  <p>Страницы с адресом {{ path }} не существует</p>
+  <h3>
+  <a href="{% url 'posts:index' %}">Можете вернуться на главную страницу</a>
+  </h3>
+{% endblock %}
