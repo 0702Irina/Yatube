@@ -251,11 +251,13 @@ class FollowTests(TestCase):
         self.follower_client.force_login(self.user_follower)
 
     def test_follow(self):
-        follower_count = Follow.objects.count()
-        self.follower_client.get(reverse(
-            'posts:profile_follow',
-            args=(self.user_following.username,)))
-        self.assertEqual(Follow.objects.count(), follower_count + 1)
+        self.follower_client.get(
+            reverse(
+                'posts:profile_follow',
+                kwargs={'username': self.user_following.username}
+            )
+        )
+        self.assertEqual(Follow.objects.all().count(), 1)
 
     def test_unfollow(self):
         Follow.objects.create(
