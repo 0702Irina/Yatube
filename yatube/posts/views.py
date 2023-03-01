@@ -4,7 +4,6 @@ from django.core.paginator import Paginator
 from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
 from yatube.settings import NUM_POST
-from django.db.models import Q
 
 
 def paginator(request, post_list):
@@ -105,8 +104,8 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    post_list = Post.objects.select_related('author', 'group').filter(
-        Q(author__following__user=request.user))
+    post_list = Post.objects.select_related(
+        'author', 'group').filter(author__following__user=request.user)
     context = {'page_obj': paginator(request, post_list)}
     return render(request, 'posts/follow.html', context)
 
