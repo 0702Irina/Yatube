@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
-from yatube.settings import MEDIA_URL, MEDIA_ROOT, DEBUG
 from django.conf.urls.static import static
+from yatube.settings import MEDIA_URL, MEDIA_ROOT, DEBUG
 
 handler404 = 'core.views.page_not_found'
 

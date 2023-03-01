@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from posts.models import Group, Post
 from yatube.settings import BASE_DIR
+from posts.models import Group, Post, Comment
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=BASE_DIR)
@@ -89,3 +89,38 @@ class PostFormsTests(TestCase):
         self.assertIs(post.text, 'Текст поста')
         self.assertRedirects(response, reverse(
             'posts:post_detail', kwargs={'post_id': post.pk}))
+
+
+class CommentTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create(username='User')
+        cls.post = Post.objects.create(
+            text='Текст поста',
+            author=cls.user
+        )
+
+    def setUp(self):
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+
+    def test_authorized_client_comment_create(self):
+        comment_count = Comment.objects.count()
+        form_data = {
+            'text': 'Данные из формы',
+            'post': self.post.pk,
+        }
+        response = self.authorized_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': self.post.pk}),
+            data=form_data,
+            follow=True
+        )
+        self.assertEqual(form_data['post'], self.post.pk)
+        self.assertEqual(self.user.username, 'User')
+        self.assertEqual(form_data['text'], 'Данные из формы')
+        self.assertIs(Comment.objects.count(), comment_count + 1)
+        self.assertRedirects(response, reverse(
+            'posts:post_detail',
+            kwargs={'post_id': self.post.pk}))

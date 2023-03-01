@@ -35,6 +35,7 @@ class PostURLTests(TestCase):
             '/group/slug/',
             '/profile/User',
             '/posts/5/',
+            '/follow/',
         )
         for url in urls_post:
             response = self.client.get(url)
@@ -50,6 +51,16 @@ class PostURLTests(TestCase):
             response, '/auth/login/?next=/create/'
         )
 
+    def test_url_status_code(self):
+        urls_post = (
+            'profile/User/follow/',
+            'profile/User/unfollow/',
+            'posts/5/comment/'
+        )
+        for url in urls_post:
+            response = self.client.get(url)
+            self.assertTrue(response.status_code, HTTPStatus.FOUND)
+
     def test_url_exists_at_author_location(self):
         response = self.authorized_author.get('/posts/5/edit/')
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
@@ -62,6 +73,7 @@ class PostURLTests(TestCase):
             '/posts/5/': 'posts/post_detail.html',
             '/create/': 'posts/create_post.html',
             '/posts/5/edit/': 'posts/create_post.html',
+            '/follow/': 'posts/follow.html',
         }
         for address, template in templates_url_names.items():
             with self.subTest(address=address):

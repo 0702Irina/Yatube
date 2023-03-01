@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from yatube.settings import NUM_POST
 from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
-from yatube.settings import NUM_POST
 
 
 def paginator(request, post_list):
@@ -114,9 +114,10 @@ def follow_index(request):
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     following = Follow.objects.filter(
-        author=author, user=request.user).exists()
+        author=author,
+        user=request.user).exists()
     if request.user != author and not following:
-        Follow.objects.create(
+        Follow.objects.get_or_create(
             user=request.user,
             author=author
         )
@@ -125,6 +126,8 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    Follow.objects.filter(
-        user=request.user, author__username=username).delete()
+    filt = Follow.objects.filter(
+        user=request.user, author__username=username)
+    if filt.exists():
+        filt.delete()
     return redirect('posts:profile', username)
