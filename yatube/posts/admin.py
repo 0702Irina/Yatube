@@ -47,10 +47,9 @@ class FollowAdmin(admin.ModelAdmin):
         'author',
         'user',
     )
-    search_fields = ('text',)
     list_filter = ('author',)
     empty_value_display = '-пусто-'
-    verbose_name = 'Комментарий',
+    verbose_name = 'Подписчики',
 
 
 admin.site.register(Post, PostAdmin)

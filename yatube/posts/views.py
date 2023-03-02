@@ -85,8 +85,7 @@ def post_edit(request, post_id):
     if form.is_valid():
         post.save()
         return redirect('posts:post_detail', post.pk,)
-    is_edit = True
-    context = {'form': form, 'is_edit': is_edit}
+    context = {'form': form, 'is_edit': True}
     return render(request, 'posts/create_post.html', context)
 
 
@@ -115,7 +114,7 @@ def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     following = Follow.objects.filter(
         author=author,
-        user=request.user).exists()
+        user=request.user)
     if request.user != author and not following:
         Follow.objects.get_or_create(
             user=request.user,
